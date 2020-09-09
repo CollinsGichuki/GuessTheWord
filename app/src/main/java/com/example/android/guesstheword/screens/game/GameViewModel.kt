@@ -76,7 +76,7 @@ class GameViewModel : ViewModel() {
     private fun nextWord() {
         if (wordList.isEmpty()) {
             //End the game
-            gameFinished()
+            onGameFinished()
         } else {
             //Select and remove a word from the list
             _word.value = wordList.removeAt(0)
@@ -96,7 +96,7 @@ class GameViewModel : ViewModel() {
     }
 
     //Method for Game Finished event
-    fun gameFinished() {
+    fun onGameFinished() {
         _eventGameFinnish.value = true
     }
 

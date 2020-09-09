@@ -53,33 +53,21 @@ class GameFragment : Fragment() {
         //Initialize the viewModel
         gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
 
-        //The LiveData Observer
-        gameViewModel.score.observe(viewLifecycleOwner, Observer {
-            //Update the score when the data changes
-            newScore -> binding.scoreText.text = newScore.toString()
-        })
+        //Assign the ViewModel to the DataBinding
+        // This allows the bound layout(game_fragment) to directly access the data in the ViewModel
+        binding.gameViewModel = gameViewModel
 
-        //Attaching an Observer Object to the word LiveData
-        gameViewModel.word.observe(viewLifecycleOwner, Observer { newWord -> binding.wordText.text = newWord })
+        //Specifying the fragment view as the lifecycle owner of the binding
+        //This is used so that the binding can observe the liveData updates
+        binding.lifecycleOwner = viewLifecycleOwner
 
         //Attaching Observer to the gameFinish event
         gameViewModel.eventGameFinnish.observe(viewLifecycleOwner, Observer<Boolean> { hasFinished -> if (hasFinished) endGame() })
 
-        binding.correctButton.setOnClickListener { onCorrect() }
-        binding.skipButton.setOnClickListener { onSkip() }
         binding.endGameButton.setOnClickListener { endGame() }
 
         return binding.root
 
-    }
-
-    /** Methods for button click handlers **/
-    private fun onSkip() {
-        gameViewModel.onSkip()
-    }
-
-    private fun onCorrect() {
-        gameViewModel.onCorrect()
     }
 
     private fun endGame() {
@@ -91,14 +79,5 @@ class GameFragment : Fragment() {
 
         //Reset the game finished event
         gameViewModel.onGameFinishComplete()
-    }
-
-    /** Methods for updating the UI **/
-    private fun updateWordText() {
-        binding.wordText.text = gameViewModel.word.value
-    }
-
-    private fun updateScoreText() {
-        binding.scoreText.text = gameViewModel.score.value.toString()
     }
 }
